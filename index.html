@@ -34,7 +34,7 @@
     /* ================= 啟動封面 (Splash Cover) ================= */
     .cover-screen {
       position: fixed; inset: 0; z-index: 9999;
-      background: linear-gradient(180deg, rgba(67, 36, 22, 0.2) 0%, rgba(67, 36, 22, 0.95) 100%),
+      background: linear-gradient(180deg, rgba(67, 36, 22, 0.25) 0%, rgba(67, 36, 22, 0.95) 100%),
                   url('https://images.unsplash.com/photo-1548115184-bc6544d06a58?auto=format&fit=crop&w=1200&q=80') center/cover;
       display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
       padding: 40px 24px 80px; transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s;
@@ -246,7 +246,7 @@
     document.getElementById('screen-cover').classList.add('hide');
   }
 
-  // ================= 核心資料庫 (修改時間與細節都在這裡) =================
+  // ================= 核心資料庫 =================
   const db = {
     'd1': {
       title: "10/10 廣安海景與無人機秀",
@@ -269,7 +269,7 @@
       alert: "今日備忘：<b>09:00</b> 先換飯店寄放行李至 NewCZ Nampo Hotel；釜田市場吃小吃建議多備韓元現金！",
       items: [
         { time: "09:00", title: "換宿至 NewCZ Nampo", sub: "退房並前往新飯店寄放行李", type: "traffic", kr: "뉴씨즈 남포호텔", map: "https://map.naver.com/p/search/%EB%89%B4%EC%94%A8%EC%A6%88%20%EB%82%A8%ED%8F%AC%ED%98%B8%ED%85%94", img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80", desc: "步行前往新飯店寄放行李後，搭 Uber 展開今日行程。" },
-        { time: "09:50", title: "釜田市場傳統小吃", sub: "排骨肉餅、燻鴨、麝香葡萄", type: "spot", kr: "부전시장", map: "https://map.naver.com/p/search/%EB%B6%80%EC%A0%84%EC%8B%9C%EC%9E%A5", img: "https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&w=800&q=80", desc: "釜山在地人的大廚房！沿路品嚐手工排骨豬肉餅、大王鯛魚燒，記得買當季超甜的無籽麝香葡萄回飯店吃。" },
+        { time: "09:50", title: "釜田市場傳統小吃", sub: "排骨肉餅、燻鴨、麝香葡萄", type: "spot", kr: "부전시장", map: "https://map.naver.com/p/search/%EB%B6%80%EC%82%B0%EC%8B%9C%EC%9E%A5", img: "https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&w=800&q=80", desc: "釜山在地人的大廚房！沿路品嚐手工排骨豬肉餅、大王鯛魚燒，記得買當季超甜的無籽麝香葡萄回飯店吃。" },
         { time: "12:30", title: "三五亭蔘雞湯", sub: "西面老字號溫補名店", type: "food", kr: "삼오정", map: "https://map.naver.com/p/search/%EC%82%BC%EC%98%A4%EC%A0%95", img: "https://images.unsplash.com/photo-1547928576-a4a33237cbc3?auto=format&fit=crop&w=800&q=80", desc: "半世紀老字號！整隻童子雞燉至骨肉分離，肚內塞滿香濃糯米、高麗蔘與大棗，秋冬溫補暖胃第一名！" },
         { time: "14:30", title: "ARTE MUSEUM BUSAN", sub: "影島沉浸式光影美術館", type: "spot", kr: "아르떼뮤지엄 부산", map: "https://map.naver.com/p/search/%EC%95%84%EB%A5%B4%EB%96%BC%EB%AE%A4%EC%A7%80%EC%97%84", img: "https://www.visitbusan.net/uploadImgs/files/cntnts/20240912162614628_oen", desc: "釜山最大數位沉浸式藝術展！以「永恆的自然」為概念，融合巨型鏡面、投影與專屬訂製香氛，逼真還原洶湧巨浪、夢幻瀑布與極光花海，穿淺色衣物拍照效果極佳！" },
         { time: "18:00", title: "勝畜畜產 (南浦店)", sub: "高CP值厚切熟成五花與韓牛", type: "food", kr: "승축축산 남포점", map: "https://map.naver.com/p/search/%EC%8A%B9%EC%B6%95%EC%B6%95%EC%82%B0", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80", desc: "南浦洞人氣熟成烤肉！提供厚切熟成五花肉與高檔韓牛，外焦裡嫩鎖住肉汁，配上生菜包大蒜泡菜超級滿足！" },
@@ -351,6 +351,10 @@
 
   // ================= 導航邏輯 =================
   let currentListId = '';
+
+  function enterApp() {
+    document.getElementById('screen-cover').classList.add('hide');
+  }
 
   function openList(id) {
     currentListId = id;
