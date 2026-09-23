@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>釜山慶州 5D4N 秋季自由行</title>
+  
+  <!-- 引入 Google 字體與 Phosphor Icons 向量圖示庫 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+  <style>
+    :root {
+      /* 🍁 秋季專屬調色盤 */
+      --primary: #c2410c;       /* 楓葉橘紅 */
+      --primary-light: #ffedd5; /* 暖米黃色 */
+      --accent: #b45309;        /* 銀杏深黃 */
+      --bg: #faf6f0;            /* 溫暖燕麥米白底色 */
+      --surface: #ffffff;
+      --text: #292524;          /* 暖深灰色 */
+      --text-muted: #78716c;    /* 暖淺灰色 */
+      --border: #e7e5e4;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+    
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+      margin: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      padding-bottom: 100px;
+    }
+
+    /* 動態頂部英雄封面 - 秋季暖色漸層 */
+    .hero {
+      position: relative;
+      height: 260px;
+      background-color: #432416;
+      overflow: hidden;
+      border-bottom-left-radius: var(--radius-lg);
+      border-bottom-right-radius: var(--radius-lg);
+      box-shadow: 0 10px 30px rgba(194, 65, 12, 0.15);
+    }
+    .hero-img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+      transition: opacity 0.5s ease, transform 0.8s ease; opacity: 0;
+    }
+    .hero-img.active { opacity: 0.85; transform: scale(1.05); }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      /* 夕陽暖棕色漸層 */
+      background: linear-gradient(to top, rgba(67, 36, 22, 0.95) 0%, rgba(67, 36, 22, 0.2) 60%);
+    }
+    .hero-content { position: absolute; bottom: 24px; left: 24px; right: 24px; color: white; }
+    .hero-badge {
+      display: inline-block; background: rgba(255,255,255,0.25); backdrop-filter: blur(8px);
+      padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 8px;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+    .hero h1 { font-size: 1.6rem; font-weight: 800; margin: 0 0 4px 0; line-height: 1.3; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+    .hero p { margin: 0; font-size: 0.85rem; opacity: 0.9; }
+
+    /* 主內容區 */
+    .container { max-width: 600px; margin: 0 auto; padding: 20px 20px 0; }
+
+    /* 警告/任務提示卡 - 銀杏黃 */
+    .alert-card {
+      background: linear-gradient(135deg, #fefce8 0%, #fef08a 100%);
+      border: 1px solid #fde047; border-radius: var(--radius-md);
+      padding: 16px; margin-bottom: 24px; display: flex; gap: 12px;
+      box-shadow: 0 4px 12px rgba(202, 138, 4, 0.1);
+    }
+    .alert-icon { font-size: 1.5rem; color: #a16207; }
+    .alert-text { font-size: 0.85rem; color: #713f12; line-height: 1.5; }
+    .alert-text b { color: #854d0e; }
+
+    /* =========================================
+       模式 A：互動式時間軸 (Day 1 - Day 5)
+       ========================================= */
+    .timeline { position: relative; padding-left: 28px; }
+    .timeline::before {
+      content: ''; position: absolute; top: 0; bottom: 0; left: 10px;
+      width: 2px; background: #e7e5e4; border-radius: 2px;
+    }
+    .t-item { position: relative; margin-bottom: 20px; opacity: 0; transform: translateY(15px); animation: fadeInUp 0.4s forwards; }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    .t-dot {
+      position: absolute; left: -23px; top: 20px; width: 12px; height: 12px;
+      border-radius: 50%; background: white; border: 3px solid var(--primary); z-index: 2;
+    }
+    .t-card {
+      background: var(--surface); border-radius: var(--radius-md); padding: 16px;
+      box-shadow: 0 4px 15px -3px rgba(120, 113, 108, 0.1); cursor: pointer; transition: all 0.25s ease;
+      border: 1px solid transparent; overflow: hidden;
+    }
+    .t-card:active { transform: scale(0.98); }
+    .t-card.task { border-color: #fca5a5; box-shadow: 0 4px 15px -3px rgba(239, 68, 68, 0.15); }
+    
+    .t-header { display: flex; justify-content: space-between; align-items: flex-start; }
+    .t-time { font-size: 1.1rem; font-weight: 800; color: var(--primary); font-family: 'Plus Jakarta Sans', sans-serif; min-width: 50px; white-space: nowrap; }
+    .t-title-area { flex: 1; margin-left: 12px; }
+    .t-title { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
+    .t-subtitle { font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; }
+    .t-icon {
+      width: 32px; height: 32px; border-radius: 10px; background: var(--primary-light); color: var(--primary);
+      display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;
+    }
+
+    .t-details { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+    .t-card.expanded .t-details { max-height: 800px; opacity: 1; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--border); }
+
+    /* =========================================
+       模式 B：專屬清單 (購物/美妝)
+       ========================================= */
+    .add-btn-wrap { margin-bottom: 16px; }
+    .add-btn {
+      width: 100%; background: #fafaf9; border: 2px dashed #d6d3d1; color: #57534e;
+      padding: 14px; border-radius: var(--radius-md); font-size: 0.95rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.2s;
+    }
+    .add-btn:active { background: #e7e5e4; transform: scale(0.98); }
+
+    .shopping-grid { display: flex; flex-direction: column; gap: 16px; }
+    .shop-card {
+      background: var(--surface); border-radius: var(--radius-md); padding: 18px; position: relative;
+      box-shadow: 0 4px 15px -3px rgba(120, 113, 108, 0.1); opacity: 0; transform: translateY(15px); animation: fadeInUp 0.4s forwards;
+    }
+    
+    /* 秋季伴手禮主題 (橘黃) */
+    .shop-card.buy-theme { border: 1px solid #fde047; box-shadow: 0 4px 15px -3px rgba(202, 138, 4, 0.1); }
+    /* 秋季芒草美妝主題 (玫瑰粉) */
+    .shop-card.beauty-theme { border: 1px solid #fbcfe8; box-shadow: 0 4px 15px -3px rgba(219, 39, 119, 0.1); }
+
+    .shop-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px dashed var(--border); }
+    .shop-icon {
+      width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; flex-shrink: 0;
+    }
+    .buy-theme .shop-icon { background: #fefce8; color: #a16207; }
+    .beauty-theme .shop-icon { background: #fdf2f8; color: #be185d; }
+
+    .shop-title-area { flex: 1; }
+    .shop-category { font-size: 0.8rem; font-weight: 800; margin-bottom: 2px; }
+    .buy-theme .shop-category { color: #a16207; }
+    .beauty-theme .shop-category { color: #be185d; }
+    .shop-title { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .shop-content { font-size: 0.88rem; color: #44403c; line-height: 1.65; white-space: pre-wrap;}
+    .shop-content b { color: #1c1917; }
+
+    .delete-btn {
+      position: absolute; top: 18px; right: 18px; background: #fee2e2; color: #ef4444; border: none;
+      width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; cursor: pointer; transition: 0.2s;
+    }
+    .delete-btn:active { transform: scale(0.9); }
+    
+    /* 展開圖片與按鈕通用 */
+    .d-img { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; background-color: #e7e5e4; }
+    .d-text { font-size: 0.85rem; color: #44403c; line-height: 1.6; margin-bottom: 12px; }
+    .btn-group { display: flex; gap: 8px; }
+    .btn {
+      flex: 1; display: flex; justify-content: center; align-items: center; gap: 6px; padding: 10px; border-radius: 10px;
+      font-size: 0.8rem; font-weight: 600; border: none; cursor: pointer; text-decoration: none; transition: background 0.2s;
+    }
+    .btn-copy { background: #f5f5f4; color: #44403c; border: 1px solid #d6d3d1; }
+    .btn-copy:active { background: #e7e5e4; }
+    .btn-map { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .btn-map:active { background: #d1fae5; }
+
+    /* App 底部導航 */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(0,0,0,0.05);
+      display: flex; justify-content: space-between; padding: 10px 8px 22px; z-index: 100;
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      color: var(--text-muted); cursor: pointer; flex: 1; transition: color 0.3s;
+    }
+    .nav-item i { font-size: 1.3rem; transition: transform 0.3s; }
+    .nav-item span { font-size: 0.6rem; font-weight: 700; }
+    .nav-item.active { color: var(--primary); }
+    .nav-item.active i { font-weight: bold; transform: translateY(-2px); }
+    .nav-item.active.shopping-tab { color: #a16207; } /* 購物清單秋橘色 */
+    .nav-item.active.beauty-tab { color: #be185d; }   /* 美妝芒草粉色 */
+
+    /* 表單 Modal */
+    .modal-bg {
+      position: fixed; inset: 0; background: rgba(41, 37, 36, 0.6); backdrop-filter: blur(4px);
+      display: none; justify-content: center; align-items: flex-end; z-index: 200;
+    }
+    .modal-bg.show { display: flex; }
+    .modal-box {
+      background: white; width: 100%; max-width: 520px; border-radius: 24px 24px 0 0; padding: 20px 20px 34px;
+      transform: translateY(100%); animation: slideUp 0.3s forwards;
+    }
+    @keyframes slideUp { to { transform: translateY(0); } }
+    .modal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-top h3 { margin: 0; font-size: 1.2rem; display: flex; align-items: center; gap: 6px; color: var(--text); }
+    .close-btn { font-size: 1.5rem; background: none; border: none; cursor: pointer; color: var(--text-muted); }
+    
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
+    .form-group input, .form-group textarea {
+      width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px;
+      font-size: 0.95rem; font-family: inherit; background: #fafaf9; color: var(--text);
+    }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .submit-btn {
+      width: 100%; padding: 14px; background: var(--primary); color: white;
+      border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 10px;
+    }
+    .submit-btn.beauty-btn { background: #be185d; }
+    .submit-btn.buy-btn { background: #a16207; }
+
+    #toast {
+      position: fixed; top: 40px; left: 50%; transform: translateX(-50%) translateY(-20px);
+      background: rgba(41, 37, 36, 0.95); color: white; padding: 12px 24px; border-radius: 999px;
+      font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 8px;
+      opacity: 0; pointer-events: none; transition: all 0.3s; z-index: 999;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  </style>
+</head>
+<body>
+
+  <!-- 動態封面區 -->
+  <header class="hero">
+    <img src="https://images.unsplash.com/photo-1548115184-bc6544d06a58?auto=format&fit=crop&w=1000&q=80" class="hero-img active" id="heroImg">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-badge" id="heroBadge">🍂 10/10 (六)</div>
+      <h1 id="heroTitle">廣安里海景與無人機秀</h1>
+      <p id="heroDesc">廣安里無人機秀 • 豬肉湯飯 • 抵達釜山</p>
+    </div>
+  </header>
+
+  <!-- 主內容容器 -->
+  <main class="container">
+    <div id="alertBox" class="alert-card"></div>
+    <div id="contentArea"></div>
+  </main>
+
+  <nav class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab('d1')" id="nav-d1"><i class="ph ph-airplane-landing"></i><span>D1</span></div>
+    <div class="nav-item" onclick="switchTab('d2')" id="nav-d2"><i class="ph ph-palette"></i><span>D2</span></div>
+    <div class="nav-item" onclick="switchTab('d3')" id="nav-d3"><i class="ph ph-waves"></i><span>D3</span></div>
+    <div class="nav-item" onclick="switchTab('d4')" id="nav-d4"><i class="ph ph-leaf"></i><span>D4</span></div>
+    <div class="nav-item" onclick="switchTab('d5')" id="nav-d5"><i class="ph ph-crab"></i><span>D5</span></div>
+    <div class="nav-item shopping-tab" onclick="switchTab('buy')" id="nav-buy"><i class="ph ph-shopping-bag-open"></i><span>必買</span></div>
+    <div class="nav-item beauty-tab" onclick="switchTab('beauty')" id="nav-beauty"><i class="ph ph-sparkle"></i><span>美妝</span></div>
+  </nav>
+
+  <!-- 新增項目的表單彈窗 -->
+  <div class="modal-bg" id="addModal" onclick="closeModal(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-top">
+        <h3 id="modalTitle"><i class="ph-bold ph-plus-circle"></i> 新增專屬清單</h3>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="form-group">
+        <label>自訂分類標籤 (如：免稅店、包包、小吃)</label>
+        <input type="text" id="customCategory" placeholder="輸入分類，預設為「我的清單」">
+      </div>
+      <div class="form-group">
+        <label>物品/店鋪名稱 *</label>
+        <input type="text" id="customTitle" placeholder="想買什麼？" required>
+      </div>
+      <div class="form-group">
+        <label>備註細節 (可選)</label>
+        <textarea id="customDesc" placeholder="記錄價錢、尺寸、色號或朋友託買資訊..."></textarea>
+      </div>
+      <button class="submit-btn" id="submitBtn" onclick="saveCustomItem()">儲存至清單</button>
+    </div>
+  </div>
+
+  <div id="toast"><i class="ph-fill ph-check-circle"></i><span id="toastMsg">已複製</span></div>
+
+<script>
+  // ================= 核心資料庫 =================
+  const itineraryData = {
+    'd1': {
+      type: 'timeline',
+      meta: {
+        date: "🍂 10/10 (六)", title: "廣安里海景與無人機秀", desc: "落地釜山 • 廣安大橋夜景 • 水邊豬肉湯飯",
+        img: "https://www.visitbusan.net/uploadImgs/files/cntnts/20240126145805570",
+        alert: "今日重點：<b>13:40</b> 去南浦 Emart24 預訂 15 瓶飲料；<b>17:30</b> 開 CatchTable 抽水邊最高豬肉湯飯號碼牌！"
+      },
+      items: [
+        { time: "07:00", icon: "ph-airplane-takeoff", title: "搭機前往釜山", sub: "05:00 報到 / 10:20 降落金海機場", type: "traffic" },
+        { time: "11:40", icon: "ph-suitcase-rolling", title: "Aventree 飯店寄行李", sub: "南浦洞商圈內", type: "hotel", kr: "아벤트리호텔 부산", map: "https://map.naver.com/p/search/%EC%95%84%EB%B2%A4%ED%8A%B8%EB%A6%AC%ED%98%B8%ED%85%94%20%EB%B6%80%EC%82%B0" },
+        { time: "12:10", icon: "ph-bone", title: "弘小(紅燒)豬腳", sub: "午餐：原味/辣味半半豬腳", type: "food", kr: "홍소족발 본점", map: "https://map.naver.com/p/search/%ED%99%8D%EC%86%8C%EC%A1%B1%EB%B0%9C", desc: "南浦洞極具盛名的豬腳老店！外皮軟糯富含膠原蛋白，附贈鮮美醒酒大骨湯。" },
+        { time: "13:40", icon: "ph-warning-circle", title: "任務：預訂飲料×15", sub: "南浦 Emart24，約定 10/14 取貨", type: "task" },
+        { time: "13:50", icon: "ph-wallet", title: "友利換錢所換錢", sub: "換完韓幣搭 Uber 往廣安里", type: "traffic" },
+        { time: "14:30", icon: "ph-footprints", title: "廣安里文創 ＆ 沙灘漫步", sub: "SCENTICA 香水、ADoR Perfume", type: "spot" },
+        { time: "17:00", icon: "ph-coffee", title: "Beansbins 海景咖啡廳", sub: "草莓/水果鬆餅賞廣安大橋落日", type: "food", kr: "빈스빈스 광안리점", map: "https://map.naver.com/p/search/%EB%B9%88%EC%8A%A4%EB%B9%88%EC%8A%A4%20%EA%B4%91%EC%95%88%EB%A6%AC%EC%A0%90" },
+        { time: "19:00", icon: "ph-shooting-star", title: "廣安里 M 無人機燈光秀", sub: "重點景點：秋夜限定科技燈光秀", type: "spot", kr: "광안리해수욕장", map: "https://map.naver.com/p/search/%EA%B4%91%EC%95%88%EB%A6%AC%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5", desc: "釜山代表性浪漫海景地標！每週六晚間19:00第一場，數百架無人機在廣安大橋前變換3D圖騰，沙灘上免費觀賞。" },
+        { time: "19:25", icon: "ph-bowl-food", title: "水邊最高豬肉湯飯", sub: "晚餐：濃郁奶白高湯與鮮嫩五花", type: "food", kr: "수변최고돼지국밥", map: "https://map.naver.com/p/search/%EC%88%98%EB%B3%80%EC%B5%9C%EA%B3%A0%EB%8F%BC%EC%A7%80%EA%B5%AD%EB%B0%A5", desc: "釜山評價最高湯飯！奶白色濃郁大骨高湯，推薦松坂肉湯飯，加上蝦醬與韭菜超對味。" },
+        { time: "21:40", icon: "ph-bed", title: "Aventree 辦理入住", sub: "稍作休息，可至街邊吃傳統魚板", type: "hotel" }
+      ]
+    },
+    'd2': {
+      type: 'timeline',
+      meta: {
+        date: "🍂 10/11 (日)", title: "傳統市場大吃與光影展", desc: "釜田市場 • ARTE Museum • 熟成烤肉",
+        img: "https://www.visitbusan.net/uploadImgs/files/cntnts/20240912162614628_oen",
+        alert: "今日備忘：<b>09:00</b> 先換飯店寄放行李至 NewCZ Nampo Hotel；釜田市場吃小吃建議多備韓元現金！"
+      },
+      items: [
+        { time: "09:00", icon: "ph-arrows-left-right", title: "換宿至 NewCZ Nampo", sub: "退房並前往新飯店寄放行李", type: "traffic", kr: "뉴씨즈 남포호텔", map: "https://map.naver.com/p/search/%EB%89%B4%EC%94%A8%EC%A6%88%20%EB%82%A8%ED%8F%AC%ED%98%B8%ED%85%94" },
+        { time: "09:50", icon: "ph-storefront", title: "釜田市場傳統小吃", sub: "早餐：排骨肉餅、燻鴨、明卵飯捲", type: "spot", kr: "부전시장", map: "https://map.naver.com/p/search/%EB%B6%80%EC%A0%84%EC%8B%9C%EC%9E%A5" },
+        { time: "12:30", icon: "ph-cooking-pot", title: "三五亭蔘雞湯", sub: "午餐：西面老字號溫補名店", type: "food", kr: "삼오정", map: "https://map.naver.com/p/search/%EC%82%BC%EC%98%A4%EC%A0%95", desc: "半世紀老字號蔘雞湯！童子雞燉至骨肉分離，肚內塞滿糯米、高麗蔘與大棗，初秋溫補最適合！" },
+        { time: "14:30", icon: "ph-camera", title: "ARTE MUSEUM BUSAN", sub: "重點景點：影島沉浸式光影美術館", type: "spot", kr: "아르떼뮤지엄 부산", map: "https://map.naver.com/p/search/%EC%95%84%EB%A5%B4%EB%96%BC%EB%AE%A4%EC%A7%80%EC%97%84", desc: "釜山最大數位沉浸式藝術展！融合鏡面、投影與香氛，還原巨浪、極光與花海，超狂打卡點。" },
+        { time: "18:00", icon: "ph-fire", title: "勝畜畜產 (南浦店)", sub: "晚餐：高CP值厚切熟成五花與韓牛", type: "food", kr: "승축축산 남포점", map: "https://map.naver.com/p/search/%EC%8A%B9%EC%B6%95%EC%B6%95%EC%82%B0", desc: "南浦洞人氣熟成烤肉！外焦裡嫩鎖住肉汁，配上生菜包大蒜泡菜超級滿足！" },
+        { time: "20:00", icon: "ph-moon-stars", title: "BIFF 廣場 ＋ 光復路", sub: "逛街消化，宵夜外帶橋村炸雞", type: "shop", kr: "교촌치킨 남포점", map: "https://map.naver.com/p/search/%EA%B5%90%EC%B4%8C%EC%B9%98%ED%82%A8" }
+      ]
+    },
+    'd3': {
+      type: 'timeline',
+      meta: {
+        date: "🍂 10/12 (一)", title: "冬柏島海景與尾浦散策", desc: "世峰樓 • 老虎大福 • 海雲台採購",
+        img: "https://tong.visitkorea.or.kr/cms/resource/20/3334420_image2_1.jpg",
+        alert: "今日備忘：下午 Emart 海雲台店購物，滿額記得攜帶護照直接辦理現場退稅！"
+      },
+      items: [
+        { time: "08:00", icon: "ph-hamburger", title: "EGG DROP + Mega Coffee", sub: "早餐：歐姆蛋厚吐司外帶回房吃", type: "food" },
+        { time: "10:30", icon: "ph-waves", title: "冬柏島 ＆ APEC 世峰樓", sub: "重點景點：秋日海景木棧道", type: "spot", kr: "동백섬", map: "https://map.naver.com/p/search/%EB%8F%99%EB%B0%B1%EC%84%AC", desc: "一邊是翠綠松林，一邊是湛藍海水的懸空木棧道。途經 2005 峰會世峰樓，能同時收納廣安大橋與海雲台沙灘美景。" },
+        { time: "12:30", icon: "ph-footprints", title: "尾浦散策", sub: "慢逛文創選物店與海岸村落", type: "spot", kr: "미포", map: "https://map.naver.com/p/search/%EB%AF%B8%ED%8F%AC" },
+        { time: "13:30", icon: "ph-ice-cream", title: "老虎冰淇淋大福", sub: "人氣排隊甜點，薄皮Q嫩", type: "food", kr: "호랑이젤라떡", map: "https://map.naver.com/p/search/%ED%98%B8%EB%9E%91%EC%9D%B4%EC%A0%A4%EB%9D%BC%EB%96%A1" },
+        { time: "14:00", icon: "ph-bowl-food", title: "極東豬肉湯飯", sub: "午餐：米其林推薦清湯派湯飯", type: "food", kr: "극동돼지국밥", map: "https://map.naver.com/p/search/%EA%B7%B9%EB%8F%99%EB%8F%BC%EC%A7%80%EA%B5%AD%EB%B0%A5", desc: "源自 1966 年主廚手藝的清澈甘甜白湯，配上切得極薄的鮮嫩白切肉，回甘不膩口！" },
+        { time: "15:30", icon: "ph-shopping-cart", title: "Emart 海雲台店大採購", sub: "箱購零食，17:30 搭車回飯店放", type: "shop", kr: "이마트 해운대점", map: "https://map.naver.com/p/search/%EC%9D%B4%EB%A7%88%ED%8A%B8%20%ED%95%B4%EC%9A%B4%EB%8C%80" },
+        { time: "19:00", icon: "ph-cooking-pot", title: "豆田裡 韓式小菜吃到飽", sub: "晚餐：南浦洞高 CP 值老字號", type: "food", kr: "콩밭에", map: "https://map.naver.com/p/search/%EC%BD%A9%EB%B0%AD%EC%97%90" },
+        { time: "宵夜", icon: "ph-bone", title: "Puradak 炸雞", sub: "飯店享用：推薦黑蒜或青椒美乃滋", type: "food" }
+      ]
+    },
+    'd4': {
+      type: 'timeline',
+      meta: {
+        date: "🍁 10/13 (二)", title: "慶州千年古都秋季限定", desc: "瞻星臺粉紅芒草 • 大陵苑 • 韓屋街",
+        img: "https://img.atlasobscura.com/Fj8W6XSHSSpFsg7SVTMZ5yXmt7AwVuyKM-rTRnknnqg/rt:fit/w:1200/q:80/sm:1/scp:1/ar:1/aHR0cHM6Ly9hdGxh/cy1kZXYuczMuYW1h/em9uYXdzLmNvbS91/cGxvYWRzL3BsYWNl/X2ltYWdlcy80OTU2/ZTE5MS1iMDk3LTRk/NjktOTZkZC0zMGU1/MDljNzYzODdlMGEy/OWIwYWRkMzA4OTQ3/M2FfMkE0NTVBTi5q/cGc.jpg",
+        alert: "今日備忘：KTX 班次已固定（去程 08:39 / 回程 19:37），請務必提前 15 分鐘到月台候車！"
+      },
+      items: [
+        { time: "08:39", icon: "ph-train", title: "搭乘 KTX 前往慶州", sub: "KTX 018，09:13 抵達慶州站", type: "traffic", kr: "부산역", map: "https://map.naver.com/p/search/%EB%B6%80%EC%82%B0%EC%97%AD" },
+        { time: "09:40", icon: "ph-house-line", title: "百年客人 韓式定食", sub: "早餐：古城旁豐盛家常炭烤肉", type: "food", kr: "백년손님", map: "https://map.naver.com/p/search/%EB%B0%B1%EB%85%84%EC%86%90%EB%8B%98%20%EA%B2%BD%EC%A3%BC", desc: "招牌炭烤肉定食，滿桌新鮮現拌小菜與大醬湯，開啟古都之旅的最道地滋味。" },
+        { time: "10:45", icon: "ph-plant", title: "瞻星臺 ✕ 粉紅黛子草花海", sub: "秋季限定必拍粉紅波波草 🌾", type: "spot", kr: "첨성대", map: "https://map.naver.com/p/search/%EC%B2%A8%EC%84%B1%EB%8C%80", desc: "東亞最古老天文觀測台。10月中旬周遭化身粉紅棉花糖般的粉紅芒草與波斯菊花海，秋季專屬超夢幻打卡點！" },
+        { time: "12:00", icon: "ph-tree-evergreen", title: "大陵苑 ＆ 天馬塚石牆路", sub: "重點景點：新羅王陵與秋意林蔭道", type: "spot", kr: "대릉원", map: "https://map.naver.com/p/search/%EB%8C%80%EB%A6%89%EC%9B%90", desc: "巨大圓丘陵墓群被綠草覆蓋，寧靜壯麗；外圍的石牆路兩側樹影婆娑，充滿秋季韓劇氛圍。" },
+        { time: "13:10", icon: "ph-storefront", title: "皇理團路 韓屋街", sub: "傳統瓦頂改建的文青選物與拍貼機", type: "shop", kr: "황리단길", map: "https://map.naver.com/p/search/%ED%99%A9%EB%A6%AC%EB%8B%A8%EA%B8%B8" },
+        { time: "14:30", icon: "ph-cooking-pot", title: "巨松燉排骨 (皇南店)", sub: "午餐：濃醬香辣軟嫩排骨拌飯", type: "food", kr: "거송갈비찜", map: "https://map.naver.com/p/search/%EA%B1%B0%EC%86%A1%EA%B0%88%EB%B9%84%EC%A7%90", desc: "韓屋改建餐廳，排骨慢火精燉至骨肉分離，濃郁大蒜辣甜醬汁配無限供應白飯海苔，超下飯！" },
+        { time: "17:30", icon: "ph-moon-stars", title: "東宮與月池夜景", sub: "賞水面倒影絕美夜景，隨後搭車", type: "spot", kr: "동궁과 월지", map: "https://map.naver.com/p/search/%EB%8F%99%EA%B6%81%EA%B3%BC%20%EC%9B%94%EC%A7%80" },
+        { time: "19:37", icon: "ph-train", title: "搭乘 KTX 返回釜山", sub: "KTX 059，20:11 抵達吃炒瑪麵", type: "traffic" },
+        { time: "20:30", icon: "ph-bowl-food", title: "海鮮炒瑪麵 ＋ 糖醋肉", sub: "晚餐：釜山站旁香辣海鮮麵", type: "food" }
+      ]
+    },
+    'd5': {
+      type: 'timeline',
+      meta: {
+        date: "🍂 10/14 (三)", title: "松葉蟹與披薩大滿貫", desc: "土豆湯 • 松葉蟹宴 • 李在模披薩",
+        img: "https://english.visitkorea.or.kr/public/images/foodtrip/k-food-img/img_kfood_view_131.jpg",
+        alert: "今日重點：<b>11:30</b> 提領預訂的 15 瓶飲料放回飯店；吃螃蟹最後一定要點蟹膏炒飯！"
+      },
+      items: [
+        { time: "08:30", icon: "ph-cooking-pot", title: "世界村莊土豆湯", sub: "早餐：大塊排骨肉燉馬鈴薯醒酒湯", type: "food", kr: "통뼈감자탕", map: "https://map.naver.com/p/search/%ED%86%B5%EB%BC%88%EA%B0%90%EC%9E%90%ED%83%95", desc: "釜山傳統醒酒湯！大塊帶肉豬脊骨加入紫蘇葉久燉，湯頭濃香微辣，輕咬骨肉分離。" },
+        { time: "10:00", icon: "ph-shopping-cart", title: "樂天超市光復店", sub: "最後採買與紙箱打包", type: "shop" },
+        { time: "11:30", icon: "ph-warning-circle", title: "任務：提領飲料 × 15", sub: "至 Emart24 取貨後放回飯店，空手出門", type: "task" },
+        { time: "12:15", icon: "ph-crab", title: "新東亞海鮮市場大啖松葉蟹", sub: "午餐饗宴：現撈現蒸活松葉蟹", type: "spot", kr: "신동아수산물종합시장", map: "https://map.naver.com/p/search/%EC%8B%A0%EB%8F%99%EC%95%84%EC%88%98%EC%82%B0%EB%AC%BC", desc: "室內活水產中心！親挑當日生猛活蟹，直送樓上現蒸現切，肉質爆汁鮮甜，必吃麻油海苔蟹膏炒飯！" },
+        { time: "14:00", icon: "ph-tote", title: "南浦商圈巡禮", sub: "逛 BIFF、大創、Olive Young 補貨", type: "shop" },
+        { time: "18:00", icon: "ph-pizza", title: "李在模 Pizza (南浦總店)", sub: "晚餐：傳奇排隊起司瀑布手工披薩", type: "food", kr: "이재모피자", map: "https://map.naver.com/p/search/%EC%9D%B4%EC%9E%AC%EB%AA%A8%ED%84%B0%EC%9E%90", desc: "釜山無人不曉的披薩神店！使用頂級純鮮奶起司，一拉開就是起司瀑布，推薦招牌 Crust 披薩。" },
+        { time: "20:00", icon: "ph-tent", title: "富平罐頭夜市吃透透", sub: "烤魷魚/五花肉捲/韓牛握壽司", type: "food" },
+        { time: "宵夜", icon: "ph-bowl-food", title: "南浦洞布帳馬車", sub: "辣炒盲鰻配燒酒完美結尾", type: "food" }
+      ]
+    },
+    // ================= 秋橘色：一般伴手禮清單 =================
+    'buy': {
+      type: 'shopping',
+      theme: 'buy',
+      meta: {
+        date: "🛒 伴手禮清單", title: "超市與在地特產攻略", desc: "秋季鮮果 • 零食名產 • 質感選物",
+        img: "https://images.unsplash.com/photo-1607083206968-13611e3d76db?auto=format&fit=crop&w=1000&q=80",
+        alert: "💡 採買攻略：大型超市(Emart/樂天) 皆可退稅，結帳時務必隨身出示護照唷！"
+      },
+      items: [
+        { category: "超市", icon: "ph-shopping-cart", title: "Emart / 樂天超市", sub: "泡麵、零食與日常好物",
+          desc: "• <b>泡麵零食：</b>安城湯麵、不倒翁金螃蟹海鮮麵、HBAF 杏仁果 (大蒜麵包/蜂蜜奶油口味必買)、No Brand 紫薯片。<br>• <b>日常好物：</b>韓國特級白芝麻油 (香氣超濃，超市必掃)、宗家府泡菜、袋裝海苔、韓國玉米鬚茶包。" },
+        { category: "慶州", icon: "ph-gift", title: "慶州古都 限定伴手禮", sub: "皇理團路周邊傳統名產",
+          desc: "• <b>皇南餅 (황남빵) / 佛國餅：</b>慶州最知名的傳統紅豆餡餅，皮薄餡多，配茶超讚。<br>• <b>十元麵包 (십원빵)：</b>皇理團路必吃！裡面包滿牽絲的莫札瑞拉起司，建議現場熱熱吃。<br>• <b>特色文創：</b>以瞻星臺、大陵苑為主題的質感明信片與手工香氛蠟燭。" },
+        { category: "市場", icon: "ph-bag", title: "釜田市場 秋季鮮果 🌰", sub: "在地人的廚房，新鮮划算",
+          desc: "• <b>當季水果：</b>秋天必買超巨大水蜜桃、韓國產麝香葡萄 (無籽極甜) 🍇，買回飯店當宵夜吃。<br>• <b>在地特產：</b>現烤海苔、各式韓國小菜 (醃章魚、魷魚絲)、乾燥香菇與高麗蔘。" },
+        { category: "香氛", icon: "ph-drop", title: "廣安里 質感在地香氛", sub: "海灘周邊獨立選物店",
+          desc: "行程第一天逛的 <b>SCENTICA 香水</b> 與 <b>ADoR Perfume</b>，非常適合挑選代表「釜山大海氣息」的獨立品牌小眾香水或擴香，精緻有質感且不怕撞香！" }
+      ]
+    },
+    // ================= 玫瑰粉：美妝保養獨立頁 =================
+    'beauty': {
+      type: 'shopping',
+      theme: 'beauty',
+      meta: {
+        date: "✨ 專屬美妝", title: "Olive Young 掃貨攻略", desc: "混合偏油肌 • 冷調專屬色號",
+        img: "https://images.unsplash.com/photo-1596462502278-27bf84033054?auto=format&fit=crop&w=1000&q=80",
+        alert: "💄 給妳的專屬筆記：Olive Young 可直接現場退稅！記得妳的粉底液是 00 亮白色號喔！"
+      },
+      items: [
+        { category: "保養", icon: "ph-magic-wand", title: "Olive Young：清潔與修護", sub: "混合偏油肌精選清單",
+          desc: "進去直接瞄準這些：<br><br>• <b>洗面乳：</b>Arenchia 綠茶年糕潔面、Torhop 黑鹽潔顏乳（這兩款深層清潔非常適合你的混合偏油肌）<br>• <b>防曬/精華：</b>Skin1004 防曬（清爽不油膩），並順便補貨你的 The Ordinary 煙鹼醯胺 10%+鋅 1% 精華 與 s.nature 角鯊霜。" },
+        { category: "彩妝", icon: "ph-sparkle", title: "Olive Young：冷調彩妝", sub: "底妝與冷調橄欖肌必備",
+          desc: "• <b>底妝補貨：</b>KATE 零瑕肌密粉底液 <b>（記得妳是用 00 亮白色號！）</b> 還有 KATE 蜜粉液。<br>• <b>眼妝：</b>Clio 聯名眼影盤（哈利波特款）、CANMAKE 臥蠶打亮筆。<br>• <b>唇彩：</b>挑選最適合你「冷調橄欖肌」的紫粉/冷色調唇釉。" },
+        { category: "送禮", icon: "ph-heart", title: "男友專屬代買清單", sub: "男士保養推薦",
+          desc: "• <b>底妝：</b>順手幫男友帶一條 Obge 男士素顏霜，方便他快速出門！<br>• <b>保養：</b>如果他不喜歡瓶瓶罐罐，可以順手挑一瓶男性專用的清爽型 All-in-One 化妝水。" }
+      ]
+    }
+  };
+
+  /* 秋色主調 TypeMap */
+  const typeMap = {
+    food: { color: '#c2410c', bg: '#ffedd5', label: '美食' }, /* 楓葉橘紅 */
+    spot: { color: '#b45309', bg: '#fef3c7', label: '景點' }, /* 銀杏深黃 */
+    task: { color: '#be123c', bg: '#ffe4e6', label: '重要' }, /* 石榴深紅 */
+    shop: { color: '#854d0e', bg: '#fef08a', label: '購物' }, /* 秋葉黃棕 */
+    traffic: { color: '#78716c', bg: '#f5f5f4', label: '交通' }, /* 暖石灰 */
+    hotel: { color: '#9a3412', bg: '#ffedd5', label: '住宿' } /* 栗子橘棕 */
+  };
+
+  // 全域變數存取自訂清單
+  let customItems = JSON.parse(localStorage.getItem('busan_custom_items')) || [];
+  let currentTab = 'd1';
+  const contentArea = document.getElementById('contentArea');
+  
+  function switchTab(tabId) {
+    if (tabId === currentTab && contentArea.innerHTML !== '') return;
+    currentTab = tabId;
+    const data = itineraryData[tabId];
+
+    // 更新導航樣式
+    document.querySelectorAll('.nav-item').forEach((el) => el.classList.remove('active'));
+    document.getElementById('nav-' + tabId).classList.add('active');
+
+    // 更新封面
+    const heroImg = document.getElementById('heroImg');
+    heroImg.classList.remove('active');
+    setTimeout(() => { heroImg.src = data.meta.img; heroImg.classList.add('active'); }, 150);
+    document.getElementById('heroBadge').innerText = data.meta.date;
+    document.getElementById('heroTitle').innerText = data.meta.title;
+    document.getElementById('heroDesc').innerText = data.meta.desc;
+
+    // 警示卡
+    const alertBox = document.getElementById('alertBox');
+    if (data.meta.alert) {
+      alertBox.style.display = 'flex';
+      alertBox.innerHTML = `<i class="ph-fill ph-warning-circle alert-icon"></i><div class="alert-text">${data.meta.alert}</div>`;
+    } else {
+      alertBox.style.display = 'none';
+    }
+
+    contentArea.innerHTML = '';
+    
+    // ======== A. 行程時間軸模式 ========
+    if (data.type === 'timeline') {
+      let html = `<div class="timeline">`;
+      data.items.forEach((item, index) => {
+        const typeCfg = typeMap[item.type] || typeMap.traffic;
+        const isTask = item.type === 'task' ? 'task' : '';
+        const hasDetails = item.img || item.kr || item.map || item.desc;
+
+        html += `
+          <div class="t-item" style="animation-delay: ${index * 0.08}s">
+            <div class="t-dot" style="border-color: ${typeCfg.color}"></div>
+            <div class="t-card ${isTask}" ${hasDetails ? 'onclick="toggleCard(this)"' : ''}>
+              <div class="t-header">
+                <div class="t-time" style="color: ${typeCfg.color}">${item.time}</div>
+                <div class="t-title-area">
+                  <div class="t-title">${item.title}</div>
+                  <div class="t-subtitle">${item.sub}</div>
+                </div>
+                <div class="t-icon" style="background:${typeCfg.bg}; color:${typeCfg.color}"><i class="ph-bold ${item.icon}"></i></div>
+              </div>
+        `;
+        if (hasDetails) {
+          html += `<div class="t-details" onclick="event.stopPropagation()">`;
+          if (item.img) html += `<img src="${item.img}" class="d-img" alt="實景圖" loading="lazy">`;
+          if (item.desc) html += `<div class="d-text">${item.desc}</div>`;
+          if (item.kr || item.map) {
+            html += `<div class="btn-group">`;
+            if (item.kr) html += `<button class="btn btn-copy" onclick="copyText('${item.kr}')"><i class="ph ph-copy"></i> ${item.kr}</button>`;
+            if (item.map) html += `<a href="${item.map}" target="_blank" class="btn btn-map"><i class="ph-fill ph-map-pin"></i> NAVER 導航</a>`;
+            html += `</div>`;
+          }
+          html += `</div>`;
+        }
+        html += `</div></div>`;
+      });
+      html += `</div>`;
+      contentArea.innerHTML = html;
+    } 
+    
+    // ======== B. 專屬購物清單模式 ========
+    else if (data.type === 'shopping') {
+      const themeClass = data.theme === 'beauty' ? 'beauty-theme' : 'buy-theme';
+      const btnTheme = data.theme === 'beauty' ? 'beauty-btn' : 'buy-btn';
+      
+      let html = `<div class="shopping-grid">`;
+
+      // 頂部新增按鈕
+      html += `
+        <div class="add-btn-wrap">
+          <button class="add-btn" onclick="openModal('${data.theme}')">
+            <i class="ph-bold ph-plus"></i> 新增自訂${data.theme === 'beauty' ? '美妝' : '伴手禮'}清單
+          </button>
+        </div>
+      `;
+      
+      // 1. 渲染系統預設清單
+      data.items.forEach((item, index) => {
+        html += `
+          <div class="shop-card ${themeClass}" style="animation-delay: ${index * 0.08}s">
+            <div class="shop-header">
+              <div class="shop-title-area">
+                <div class="shop-category">${item.category}</div>
+                <div class="shop-title">${item.title}</div>
+              </div>
+              <div class="shop-icon"><i class="ph-fill ${item.icon}"></i></div>
+            </div>
+            <div class="shop-content">${item.desc}</div>
+          </div>
+        `;
+      });
+
+      // 2. 渲染使用者自訂新增的清單
+      const filteredCustoms = customItems.filter(ci => ci.tab === data.theme);
+      filteredCustoms.forEach(item => {
+        html += `
+          <div class="shop-card ${themeClass}" style="animation: none; opacity: 1; transform: translateY(0);">
+            <button class="delete-btn" onclick="deleteCustom(${item.id})"><i class="ph-bold ph-trash"></i></button>
+            <div class="shop-header">
+              <div class="shop-title-area">
+                <div class="shop-category">${item.category}</div>
+                <div class="shop-title">${item.title}</div>
+              </div>
+              <div class="shop-icon"><i class="ph-fill ph-star"></i></div>
+            </div>
+            <div class="shop-content">${item.desc}</div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      contentArea.innerHTML = html;
+      
+      // 動態更改 Modal 按鈕顏色
+      document.getElementById('submitBtn').className = 'submit-btn ' + btnTheme;
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function toggleCard(el) {
+    const isExpanded = el.classList.contains('expanded');
+    if (!isExpanded) el.classList.add('expanded');
+    else el.classList.remove('expanded');
+  }
+
+  // ==== 自訂清單 CRUD 邏輯 ====
+  let currentTargetTab = '';
+  
+  function openModal(themeTab) {
+    currentTargetTab = themeTab;
+    document.getElementById('customCategory').value = '';
+    document.getElementById('customTitle').value = '';
+    document.getElementById('customDesc').value = '';
+    document.getElementById('addModal').classList.add('show');
+  }
+
+  function closeModal(e) {
+    document.getElementById('addModal').classList.remove('show');
+  }
+
+  function saveCustomItem() {
+    const category = document.getElementById('customCategory').value.trim() || '我的清單';
+    const title = document.getElementById('customTitle').value.trim();
+    const desc = document.getElementById('customDesc').value.trim();
+
+    if(!title) {
+      alert("請輸入想買的物品名稱！");
+      return;
+    }
+
+    const newItem = {
+      id: Date.now(),
+      tab: currentTargetTab,
+      category: category,
+      title: title,
+      desc: desc
+    };
+
+    customItems.push(newItem);
+    localStorage.setItem('busan_custom_items', JSON.stringify(customItems));
+    
+    closeModal();
+    // 強制重新渲染當前頁面
+    currentTab = ''; 
+    switchTab(currentTargetTab);
+  }
+
+  function deleteCustom(id) {
+    if(confirm('確定要從清單中刪除這個好物嗎？')) {
+      customItems = customItems.filter(item => item.id !== id);
+      localStorage.setItem('busan_custom_items', JSON.stringify(customItems));
+      // 強制重新渲染當前頁面
+      const tempTab = currentTab;
+      currentTab = ''; 
+      switchTab(tempTab);
+    }
+  }
+
+  function copyText(text) {
+    navigator.clipboard.writeText(text).then(() => {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').innerText = `已複製：${text}`;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    });
+  }
+
+  window.onload = () => switchTab('d1');
+</script>
+</body>
+</html>
